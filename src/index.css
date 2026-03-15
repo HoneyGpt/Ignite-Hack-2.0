@@ -1,0 +1,97 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #f97316;
+  --color-primary-dark: #cc4e00;
+  --color-accent: #ffb400;
+  --color-background: #02040a;
+  --color-surface: #0a0c10;
+  --color-ravage: #ff2e00;
+  
+  --font-sans: "Outfit", system-ui, sans-serif;
+  --font-display: "Cinzel Decorative", serif;
+  --font-ravage: "Clash Display", sans-serif;
+}
+
+@layer base {
+  body {
+    @apply bg-background text-slate-400 font-sans antialiased selection:bg-ravage selection:text-white;
+    background-image: url('/ravage-bg.png');
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+  }
+}
+
+@layer utilities {
+  .text-glow-primary {
+    text-shadow: 0 0 20px rgba(249, 115, 22, 0.6), 0 0 40px rgba(249, 115, 22, 0.3);
+  }
+  
+  .text-glow-ravage {
+    text-shadow: 0 0 15px rgba(255, 46, 0, 0.8), 0 0 30px rgba(255, 46, 0, 0.4);
+  }
+  
+  .glass-card {
+    @apply bg-black/40 backdrop-blur-xl border border-white/10 relative overflow-hidden;
+    box-shadow: 0 0 40px rgba(0,0,0,0.5);
+  }
+  
+  .glass-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 40%, rgba(255, 46, 0, 0.05) 50%, transparent 60%);
+    @apply pointer-events-none transition-transform duration-700;
+    transform: translateX(-100%);
+  }
+  
+  .glass-card:hover::before {
+    transform: translateX(100%);
+  }
+  
+  .fiery-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-ravage via-primary to-accent;
+  }
+  
+  .glow-border {
+    @apply border border-ravage/30 shadow-[0_0_15px_rgba(255,46,0,0.15)];
+  }
+  
+  .animate-flicker {
+    animation: flicker 4s linear infinite;
+  }
+  
+  .animate-sparks {
+    animation: sparks 3s ease-in-out infinite;
+  }
+}
+
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+  25% { opacity: 0.95; }
+  75% { opacity: 0.9; }
+}
+
+@keyframes sparks {
+  0%, 100% { transform: translateY(0) scale(1); filter: brightness(1); }
+  50% { transform: translateY(-5px) scale(1.02); filter: brightness(1.2); }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-background;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-ravage/40 rounded-full hover:bg-ravage/60 transition-all border-2 border-background;
+}
+
+.ravage-mask {
+  mask-image: linear-gradient(to bottom, black 0%, transparent 100%);
+}
