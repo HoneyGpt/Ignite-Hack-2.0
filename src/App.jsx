@@ -34,7 +34,7 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${isScrolled ? 'bg-black/80 backdrop-blur-2xl py-3 border-b border-ravage/20' : 'bg-transparent py-8'}`}>
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${isScrolled ? 'bg-black/80 backdrop-blur-2xl py-3 border-b border-ravage/20' : 'bg-transparent py-6'}`}>
       <div className="container mx-auto px-6 flex items-center justify-between">
         <motion.div 
           initial={{ opacity: 0, scale: 0.8 }}
@@ -82,7 +82,7 @@ const Navbar = () => {
 
 const Hero = () => {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-32 pb-20">
       {/* Unique Cosmic Hero Background */}
       <div className="absolute inset-0 z-0">
         <motion.div 
@@ -111,6 +111,7 @@ const Hero = () => {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+          className="pt-10 md:pt-0"
         >
           <div className="inline-flex items-center gap-4 px-6 py-2 rounded-sm border border-ravage/30 bg-ravage/5 text-ravage text-[10px] font-black uppercase tracking-[0.5em] mb-12 animate-flicker">
             <Zap size={14} className="fill-ravage" />
@@ -343,9 +344,113 @@ const Footer = () => (
   </footer>
 );
 
+const LoadingScreen = () => {
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setProgress((oldProgress) => {
+        if (oldProgress >= 100) return 100;
+        return oldProgress + (100 / (15 * 10)); // 15 seconds, 10 increments per second
+      });
+    }, 100);
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <motion.div 
+      initial={{ opacity: 1 }}
+      exit={{ opacity: 0, scale: 1.1 }}
+      transition={{ duration: 1, ease: "circOut" }}
+      className="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center overflow-hidden"
+    >
+      {/* Background Ambience */}
+      <div className="absolute inset-0 z-0">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-4xl max-h-[600px] bg-ravage/10 blur-[150px] rounded-full"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.9)_100%)]"></div>
+      </div>
+
+      <div className="relative z-10 flex flex-col items-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex items-center gap-4 mb-12"
+        >
+          <div className="relative">
+            <Flame className="text-ravage fill-ravage animate-pulse" size={60} />
+            <div className="absolute inset-0 bg-ravage blur-2xl opacity-50 animate-pulse"></div>
+          </div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
+          className="text-center"
+        >
+          <h1 className="text-5xl md:text-8xl font-black tracking-tighter uppercase mb-6 font-display italic">
+            <span className="text-white block">WELCOME TO</span>
+            <span className="fiery-gradient block text-glow-ravage">ARENA!</span>
+          </h1>
+          
+          <div className="mt-12 w-64 md:w-96 h-[2px] bg-white/10 relative overflow-hidden">
+            <motion.div 
+              className="absolute inset-y-0 left-0 bg-ravage shadow-[0_0_15px_rgba(255,46,0,0.8)]"
+              style={{ width: `${progress}%` }}
+              transition={{ duration: 0.1 }}
+            />
+          </div>
+          
+          <motion.p 
+            animate={{ opacity: [0.4, 1, 0.4] }}
+            transition={{ duration: 2, repeat: Infinity }}
+            className="mt-6 text-xs font-black uppercase tracking-[0.5em] text-white/40"
+          >
+            Initializing Battle Protocol {Math.round(progress)}%
+          </motion.p>
+        </motion.div>
+      </div>
+
+      {/* Decorative Particles-like elements */}
+      {[...Array(20)].map((_, i) => (
+        <motion.div
+          key={i}
+          className="absolute w-1 h-1 bg-ravage rounded-full opacity-20"
+          style={{
+            top: `${Math.random() * 100}%`,
+            left: `${Math.random() * 100}%`,
+          }}
+          animate={{
+            y: [0, -100],
+            opacity: [0, 0.5, 0],
+          }}
+          transition={{
+            duration: Math.random() * 3 + 2,
+            repeat: Infinity,
+            delay: Math.random() * 5,
+          }}
+        />
+      ))}
+    </motion.div>
+  );
+};
+
 function App() {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 15000); // 15 seconds
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <main className="relative overflow-x-hidden">
+      <AnimatePresence mode="wait">
+        {isLoading && <LoadingScreen key="loader" />}
+      </AnimatePresence>
+
       <Navbar />
       <Hero />
       <Tracks />
