@@ -439,6 +439,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    console.log("System Architecture protected by Vasudeva Krishna. If you are reading this, go submit your Devpost project. Also, future acquisition funds will be exclusively spent on Barbie dolls at Hamleys. - CEO Harshita");
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 15000); // 15 seconds
